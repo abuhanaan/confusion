@@ -1,5 +1,5 @@
 import { Component } from "react";
-import { Card, CardImg, CardImgOverlay, CardBody, CardTitle, CardText,  } from "reactstrap";
+import { Card, CardImg,  CardBody, CardTitle, CardText,  } from "reactstrap";
 
 
 class DishDetail extends Component {
@@ -23,13 +23,47 @@ class DishDetail extends Component {
         }
     }
 
+    renderComment(comments){
+        if (comments != null) {
+            return (
+                <div>
+                    <h4>Comments</h4>
+                    <div>
+                        {comments.map((comment) => {
+                            return (
+                                <div key={comment.id}>
+                                    <ul className="list-unstyled">
+                                        <li>{comment.comment}</li>
+                                        <li>{comment.author} {comment.date}</li>
+                                    </ul>
+                                </div>
+                            )
+                        })}
+                    </div>
+                </div>
+            )
+        } else {
+            return (
+                <div></div>
+            )
+        }
+    }
+
     render() {
         const selected = this.props.selectedDish
-        return (
-            <div className="row">
-                    {this.renderDish(selected)}
-            </div>
-        )
+        if (this.props.dish != null) {
+            return (
+                <div className="row">
+                    <div className="col-12 col-md-5 m-1">
+                        {this.renderDish(selected)}
+                    </div>
+                    <div className="col-12 col-md-5 m-1">
+                        {this.renderComment(this.props.dish.comments)}
+                    </div>
+                </div>
+                
+            )
+        }
     }
 
 }
