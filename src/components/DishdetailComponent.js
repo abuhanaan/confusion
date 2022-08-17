@@ -8,13 +8,15 @@ class DishDetail extends Component {
     renderDish(dish) {
         if (this.props.dish != null) {
             return (
-                <Card>
-                    <CardImg width="100%" src={this.props.dish.image} alt={this.props.dish.name} />
-                    <CardBody>
-                    <CardTitle>{this.props.dish.name}</CardTitle>
-                    <CardText>{this.props.dish.description}</CardText>
-                    </CardBody>
-                </Card>
+                <div>
+                    <Card>
+                        <CardImg width="100%" src={this.props.dish.image} alt={this.props.dish.name} />
+                        <CardBody>
+                        <CardTitle>{this.props.dish.name}</CardTitle>
+                        <CardText>{this.props.dish.description}</CardText>
+                        </CardBody>
+                    </Card>
+                </div>
             )
         } else {
             return (
@@ -31,10 +33,11 @@ class DishDetail extends Component {
                     <div>
                         {comments.map((comment) => {
                             return (
-                                <div key={comment.id}>
+                                <div key={comment.id} className='container'>
                                     <ul className="list-unstyled">
                                         <li>{comment.comment}</li>
-                                        <li>{comment.author} {comment.date}</li>
+                                        <li>{comment.author} {new Intl.DateTimeFormat('en-US',
+                                            { year: 'numeric', month: 'short', day: '2-digit'}).format(new Date(Date.parse(comment.date)))}</li>
                                     </ul>
                                 </div>
                             )
