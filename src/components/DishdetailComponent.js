@@ -1,4 +1,3 @@
-import { Component } from "react";
 import { Card, CardImg,  CardBody, CardTitle, CardText,  } from "reactstrap";
 
     function RenderDish({dish}) {
@@ -44,7 +43,6 @@ import { Card, CardImg,  CardBody, CardTitle, CardText,  } from "reactstrap";
 
     const DishDetail = (props) => {
         console.log("DishDetail Component render is invoked")
-        const selected = props.dish
         if (props.dish != null) {
             return (
                 <div className="row">
