@@ -23,9 +23,25 @@ export const fetchDishes = () => (dispatch) => {
     // }, 2000)
 
     return fetch(baseUrl + 'dishes')
-        // handling promise
+        // handling promise/error
+        .then(response => {
+            if (response.ok) {
+                return response
+            }
+            else {
+                var error = new Error('Error ' + response.status + ': ' + response.statusText)
+                error.response = response
+                throw error
+            }
+        },
+        // error handler
+        error => {
+            var errmess = new Error(error.message)
+            throw errmess
+        })
         .then(response => response.json()) // converts incoming data to json format
         .then(dishes => dispatch(addDishes(dishes))) // pushes dishes to redux store
+        .catch(error => dispatch(dishesFailed(error.message)))
 
 }
 
@@ -46,9 +62,25 @@ export const addDishes = (dishes) => ({
 
 export const fetchComments = () => (dispatch) => {
     return fetch(baseUrl + 'comments')
-        // handling promise
+        // handling promise/error
+        .then(response => {
+            if (response.ok) {
+                return response
+            }
+            else {
+                var error = new Error('Error ' + response.status + ': ' + response.statusText)
+                error.response = response
+                throw error
+            }
+        },
+        // error handler
+        error => {
+            var errmess = new Error(error.message)
+            throw errmess
+        })
         .then(response => response.json()) // converts incoming data to json format
-        .then(comments => dispatch(addComments(comments))) // pushes comments to redux store       
+        .then(comments => dispatch(addComments(comments))) // pushes comments to redux store
+        .catch(error => dispatch(commentsFailed(error.message)))     
 }
 
 export const commentsFailed = (errmess) => ({
@@ -66,10 +98,25 @@ export const fetchPromos = () => (dispatch) => {
     dispatch(promosLoading(true))
 
     return fetch(baseUrl + 'promotions')
-        // handling promise
+        // handling promise/error
+        .then(response => {
+            if (response.ok) {
+                return response
+            }
+            else {
+                var error = new Error('Error ' + response.status + ': ' + response.statusText)
+                error.response = response
+                throw error
+            }
+        },
+        // error handler
+        error => {
+            var errmess = new Error(error.message)
+            throw errmess
+        })
         .then(response => response.json()) // converts incoming data to json format
         .then(promos => dispatch(addPromos(promos))) // pushes promos to redux store
-
+        .catch(error => dispatch(promosFailed(error.message)))
 }
 
 // Implies that promos are being loaded from the server
