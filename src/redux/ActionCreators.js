@@ -2,17 +2,54 @@ import * as ActionTypes from './ActionTypes'
 import { DISHES } from '../shared/dishes'
 import { baseUrl } from './baseUrl'
 
-export const addComment = (dishId, rating, author, comment) => ({
+export const addComment = (comment) => ({
     type: ActionTypes.ADD_COMMENT,
-    payload: {
+    payload: comment
+})
+
+
+/******************* ACTION CREATORS *********************/
+
+// a thunk returning a function and will call some actions
+export const postComment = (dishId, rating, author, comment) => (dispatch) => {
+
+    const newComment = {
         dishId: dishId,
         rating: rating,
         author: author,
         comment: comment
     }
-})
-
-/******************* ACTION CREATORS *********************/
+    newComment.date = new Date().toISOString()
+    // posting the new comment to the server
+    return fetch(baseUrl + "comments", {
+                    method: 'POST',
+                    body: JSON.stringify(newComment),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'same-origin'
+                })
+        // handling promise/error
+        .then(response => {
+            if (response.ok) {
+                return response
+            }
+            else {
+                var error = new Error('Error ' + response.status + ': ' + response.statusText)
+                error.response = response
+                throw error
+            }
+        },
+        // error handler
+        error => {
+            var errmess = new Error(error.message)
+            throw errmess
+        })
+        .then(response => response.json()) // sending back the newComment back in json format
+        .then(response => dispatch(addComment(response))) // pushing newComment to redux store
+        .catch(error => {console.log('Post comment ', error.message,
+                        alert("Your comment could not be posted\nError: " + error.message))})
+}
 
 // a thunk returning a function and will call some actions
 export const fetchDishes = () => (dispatch) => {
