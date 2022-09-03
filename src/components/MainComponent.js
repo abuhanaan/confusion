@@ -8,7 +8,7 @@ import Contact from './ContactComponent';
 import About from './AboutComponent';
 import { Switch, Route, Redirect, withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { postComment, fetchDishes, fetchPromos, fetchComments } from '../redux/ActionCreators';
+import { postComment, fetchDishes, fetchPromos, fetchComments, fetchLeaders, postFeedback } from '../redux/ActionCreators';
 import { actions } from 'react-redux-form';
 import { TransitionGroup, CSSTransition } from 'react-transition-group'
 
@@ -23,23 +23,25 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  postComment: (dishId, rating, author, comment) => dispatch(postComment(dishId, rating, author, comment)),
+  postComment: (dishId, rating, author, comment) => dispatch(
+                postComment(dishId, rating, author, comment)),
   fetchDishes: () => {dispatch(fetchDishes())},
   resetFeedbackForm: () => {dispatch(actions.reset('feedback'))},
   fetchComments: () => {dispatch(fetchComments())},
-  fetchPromos: () => {dispatch(fetchPromos())}
+  fetchPromos: () => {dispatch(fetchPromos())},
+  fetchLeaders: () => {dispatch(fetchLeaders())},
+  postFeedback: (firstname, lastname, telnum, email, agree, contactType, message) => dispatch(
+                postFeedback(firstname, lastname, telnum, email, agree, contactType, message))
 })
 
 class Main extends Component {
-  constructor(props) {
-    super(props);
-  }
 
   // Ensures that the required data are fetched once the main component is loaded
   componentDidMount() {
     this.props.fetchDishes()
     this.props.fetchComments()
     this.props.fetchPromos()
+    this.props.fetchLeaders()
   }
 
   render(){
@@ -51,8 +53,9 @@ class Main extends Component {
                   promotion={this.props.promotions.promotions.filter((promo) => promo.featured)[0]}
                   promosLoading={this.props.promotions.isLoading}
                   promosErrMess={this.props.promotions.errMess}
-                  leader={this.props.leaders.filter((lead) => lead.featured)[0]}
-
+                  leader={this.props.leaders.leaders.filter((lead) => lead.featured)[0]}
+                  leadersLoading={this.props.leaders.isLoading}
+                  leadersErrMess={this.props.leaders.errMess}
             />
         )
     }
@@ -79,8 +82,11 @@ class Main extends Component {
                 {/* Emphasis on how data is being passed into the Menu component inside the Route
                 using an arrow function in the above line of code */}
                 <Route path="/menu/:dishId" component={DishWithId} />
-                <Route exact path="/contactus" component={() => <Contact resetFeedbackForm={this.props.resetFeedbackForm}/>} />
-                <Route path="/aboutus" component={() => <About leaders={this.props.leaders} />} />
+                <Route exact path="/contactus" component={() => <Contact resetFeedbackForm={this.props.resetFeedbackForm}
+                                                            postFeedback={this.props.postFeedback}/>} />
+                <Route path="/aboutus" component={() => <About leaders={this.props.leaders}
+                                                  isLoading={this.props.leaders.isLoading}
+                                                  errMess={this.props.leaders.errMess} />} />
                 <Redirect to="/home" />
             </Switch>
           </CSSTransition>

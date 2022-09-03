@@ -1,5 +1,5 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux'
-import { createForms } from 'react-redux-form' // with this one does not need to explicitly
+import { createForms } from 'react-redux-form' // with this, one does not need to explicitly
 // write reducers and action to store form data into react store
 import { Dishes } from './dishes'
 import { Comments } from './comments'
